@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>Curriculum Guide</title>
+</head>
+<style>
+        img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+        
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        .sidenav-label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .table-label{
+            font-size: 16px;
+            color: gray;
+        }
+
+        input, select{
+            border-radius: 25px;
+            border: 1px solid lightgray;
+            padding: 10px;
+            padding-left: 15px;
+            width: 100%;
+        }
+
+        button, .save-input{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+        }
+
+        .students{
+            width: 100vw;
+            padding-top: 3%;
+        }
+
+        form{
+            margin-top: 3%;
+        }
+
+        .labels{
+            width: 160px;
+        }
+
+        .inputs{
+            width: 275px;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 86vw; 
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+            border-left: 1px solid lightgrey; 
+            border-right: 1px solid lightgrey; 
+            height: 50px;
+        }
+
+        table th {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        .left-right {
+            border-left: 1px solid lightgrey; 
+            border-right: 1px solid lightgrey;
+            font-style: italic;
+            font-size: 16.5px;
+        }
+
+        .right {
+            border-right: 1px solid lightgrey;
+        }
+
+        .left {
+            border-left: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 12px; 
+            margin: -10; 
+        } 
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 370px;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        .enroll-dropdown {
+            width: auto;
+            background-color: maroon;
+            color: white;
+            font-weight: bold;
+        }
+        
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+        label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .right{
+            font-style: italic;
+            color: gray;
+        }
+</style>
+<body> 
+    <div class="navbar">
+        <a href="/admin_dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>    
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'registration' %}"><u>Registration</u></a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/courses">Grades</a>
+        <a href="/advisor_assignments">Adviser Assignments</a>
+        <a href="/graduation">Graduation</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    <br>
+    <br>
+
+    <form id="filter" method="POST" action="{% url 'curriculum_guide' %}"> {% csrf_token %}
+    <div style="display: flex; align-items: center; margin-top: 2%; margin-left: 18%;">
+        <label style="width: 20%;">
+            {% if program_filter == 'None' %} <div style="width: 350px;">Select Undergraduate Program and Academic Year</div>
+            {% elif program_filter == 'BSCS' %} BS Computer Science
+            {% elif program_filter == 'BSAP' %} BS Applied Physics
+            {% elif program_filter == 'BSBC' %} BS Biochemistry 
+            {% endif %}
+        </label>
+        <div style="display: flex; flex-direction: row; align-items: center; margin-left: 35%;">
+            <div style="width: 150px; font-size: 16px; color: gray;">Undergraduate Program: </div>
+            <select id="program" name='program' class="enroll-dropdown" style="margin-right: 8px; margin-left: -5px; width: 100px;">
+                {% if program_filter == 'None' %}
+                    <option selected>None</option>
+                {% else %}
+                    <option>None</option>
+                {% endif %}
+                {% for program in programs %}
+                    {% if program_filter == program %}
+                        <option value="{{ program }}" selected>{{ program }}</option>
+                    {% else %}
+                        <option value="{{ program }}">{{ program }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div style="display: flex; flex-direction: row; align-items: center; margin-left: 20px;">
+            <div style="width: 150px; font-size: 16px; color: gray;">Academic Program: </div>
+            <select id="year" name='year' class="enroll-dropdown" style="margin-right: 8px; margin-left: -50px; width: 150px;">
+                {% if year_filter == 'None' %}
+                    <option selected>None</option>
+                {% else %}
+                    <option>None</option>
+                {% endif %}
+                {% for year in years %}
+                    {% if year_filter == year %}
+                    <option value="{{ year }}" selected>{{ year }}</option>
+                    {% else %}
+                    <option value="{{ year }}">{{ year }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button style="width: 100px; margin-left: 2%;" type="button" onclick="window.location.href='/manage_registration'">Back</a></button>
+        <button type="submit" hidden></button>
+    </div>
+    </form>
+
+    <div class="students" style="max-height: 65vh; overflow-y: auto;">
+        {% if program_filter == 'None' %} Select Program 
+        {% elif program_filter == 'BSCS' %} <!-- BS Computer Science -->
+            {% if year_filter == 'None' %} <label style="margin-left:18%;">Select Year</label>
+            {% elif year_filter == '1st Year' %} <!-- 1st year : BS Computer Science -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">First Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="subject_name">GE 1</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td class="subject_name">GE 4</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td class="subject_name">GE 2</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td class="subject_name">Math 84 (Essentials of Analysis II)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Math 83</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td class="subject_name">GE 3</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td class="subject_name">Physics 71 (Elementary Physics I)</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right">Math 83</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td class="subject_name">Math 83 (Essentials of Analysis I)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">HS Algebra & Trigonometry</td> <!-- Prerequisites -->
+                            <td class="subject_name">CMSC 21 (Fundamentals of Programming)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 11</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td class="subject_name">Math 101 (Elementary Statistics)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">HS Algebra & Trigonometry</td> <!-- Prerequisites -->
+                            <td class="subject_name">CMSC 55 (Discrete Mathematical Structures in Computer Science)</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right">CMSC 11</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td class="subject_name">CMSC 11 (Introduction to Computer Science)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td class="subject_name">PE</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td class="subject_name">PE</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td class="subject_name">NSTP</td> <!-- Subject -->
+                            <td>(3)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td class="subject_name">NSTP</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>        
+                    </tbody>
+                </table>
+            {% elif year_filter == '2nd Year' %} <!-- 2nd year : BS Computer Science -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Second Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GE 5</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>GE 6</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Math 85 (Essentials of Analysis III)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Math 84</td> <!-- Prerequisites -->
+                            <td>Stat 121 (Applied Probability Models)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Math 101</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Chem 32 (Chemistry of Biomolecules)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>CMSC 121 (Web Programming)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">CMSC 23</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMSC 23 (Object-Oriented Programming Paradigms)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 21</td> <!-- Prerequisites -->
+                            <td>CMSC 124 (Design & Implementation of Programming Languages)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">CMSC 23, CMSC 123</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMCS 123 (Data Structures)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 21, CMSC 55</td> <!-- Prerequisites -->
+                            <td>CMSC 127 (Database Systems)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">CMSC 23</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMSC 130 (Logic Design & Digital Computer Circuits)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 55</td> <!-- Prerequisites -->
+                            <td>CMSC 135 (Computer Organization & Architecture) </td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 21, CMSC 130</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMSC 171 (Ethical & Social Issues in Computer Science)</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>PE</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>PE</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table>
+                <br><br>
+                <div style="margin-left: 20%;">
+                    <table style="margin-top: 15px; width: 40vw;"> 
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="text-align: center; font-size: 20px;">Midyear</th>
+                            </tr>
+                            <tr>
+                                <th class="left-right">Subject</th>
+                                <th class="left-right">Units</th>
+                                <th class="left-right">Prerequisites</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;">GE 7</td> <!-- Subject -->
+                                <td style="text-align: center;">3</td> <!-- Units -->
+                                <td></td> <!-- Prerequisites -->
+                            </tr> 
+                            <tr>
+                                <td style="text-align: center;">GE 8</td> <!-- Subject -->
+                                <td style="text-align: center;">3</td> <!-- Units -->
+                                <td></td> <!-- Prerequisites -->
+                            </tr> 
+                        </tbody>
+                    </table> 
+                </div>
+                
+            {% elif year_filter == '3rd Year' %} <!-- 3rd year : BS Computer Science -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Third Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Stat 122 (Applied Bayesian Inferential Models)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Stat 121</td> <!-- Prerequisites -->
+                            <td>Math 121.1 (Elementary Differential Equations I)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Math 85</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Math 120 (Linear Algebra)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Math 85</td> <!-- Prerequisites -->
+                            <td>CMSC 128.2 (Software Engineering II)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 128.1</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMSC 125 (Operating Systems)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 123</td> <!-- Prerequisites -->
+                            <td>CMSC 138 (Computer Networking)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 125</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMSC 122 (Human Computer Interaction)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 121</td> <!-- Prerequisites -->
+                            <td>CMSC 161 (Interactive Computer Graphics)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 123, Math 120</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMSC 128.1 (Software Engineering I)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 121, CMSC 127</td> <!-- Prerequisites -->
+                            <td>CMSC 177 (Model Building and Assessment in Data Science)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 176, Stat 122</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>CMSC 176 (Fundamentals of Data Science)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 127, Stat 121</td> <!-- Prerequisites -->
+                            <td>Stat Comp: Stat Comp 181.1 (Linear Models in Statistical Computing I)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Stat 121</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Stat Comp: Stat 130 (Nonparametric Statistical Methods)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Math 101</td> <!-- Prerequisites -->
+                            <td>HI: HI 193.1 (Representation and Algorithms for Computational Biochemistry)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">HI 191</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>HI: HI 191 (Fundamentals of Health Informatics)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Math 101</td> <!-- Prerequisites -->
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table>
+                <br/> <br/>
+
+                <div style="margin-left: 20%;">
+                    <table style="margin-top: 15px; width: 40vw;"> 
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center; font-size: 20px;">Midyear</th>
+                            <th></th><th></th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right" style="border-right: none;">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">CMSC 190 (Practicum)</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td style="text-align: center; font-style: italic; color: gray;">Junior standing</td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table> 
+                </div>
+                
+            {% elif year_filter == '4th Year' %} <!-- 4th year : BS Computer Science -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Fourth Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CMSC 141 (Automata & Language Theory)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 124</td> <!-- Prerequisites -->
+                            <td>Math 174 (Numerical Analysis I)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 21, Math 121.1</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>CMSC 150 (Computer Security)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 121, CMSC 138</td> <!-- Prerequisites -->
+                            <td>CMSC 142 (Design & Analysis of Algorithms)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 123</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>CMSC 178 (Algorithm Design and Software Foundation in Data Science) </td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 123, CMSC 176</td> <!-- Prerequisites -->
+                            <td>CMSC 198 (Special Problem)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">CMSC 197, CMSC 199 </td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>CMSC 197 (Undergraduate Seminar)</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right">Senior Standing</td> <!-- Prerequisites -->
+                            <td>Elective 2</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>CMSC 199 (Research Methods in Computer Science)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Senior Standing</td> <!-- Prerequisites -->
+                            <td>PI 100</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Stat Comp: Stat Comp 183 (Multivariate Statistical Model)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Stat 122</td> <!-- Prerequisites -->
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>HI: HI 192 (Knowledge Representation & Health Decision Support System)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">HI 191</td> <!-- Prerequisites -->
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Elective 1</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+        {% elif program_filter == 'BSAP' %} <!-- BS Applied Physics -->
+            {% if year_filter == 'None' %} <label style="margin-left:18%;">Select Year</label>
+            {% elif year_filter == '1st Year' %} <!-- 1st year : BS Applied Physics -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">First Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Math 17: Algebra & Trigonometry</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 71: Elementary Physics I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>CMSC 11: Introduction to Computer Science</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 71.1: Elementary Physics I Lab</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>(SSP) Philosophy I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Math 73: Fundamentals of Analysis I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>(SSP) History I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Chem 14: Fundamentals of General Chemistry I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>(AH) Communication I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Chem 14.1: Fundamentals of General Chemistry I Laboratory</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>NSTP</td> <!-- Subject -->
+                            <td>(3)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>(AH) Communication II</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>P.E. 1</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>(SSP) Soc. Sci. I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>NSTP</td> <!-- Subject -->
+                            <td>(3)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>P.E. 2</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br><br>
+
+                <div style="margin-left: 20%;">
+                    <table style="margin-top: 15px; width: 40vw;"> 
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center; font-size: 20px;">Midyear</th>
+                            <th></th><th></th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right" style="border-right: none; ">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">Math 74: Fundamentals of Analysis II</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td style="text-align: center;">(MST)</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table> 
+            {% elif year_filter == '2nd Year' %} <!-- 2nd year : BS Applied Physics -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Second Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Physics 72: Elementary Physics II</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 73: Elementary Physics III</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Physics 72.1: Elementary Physics II Lab</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 73.1: Elementary Physics III Lab</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Physics 111: Mathematical Physics I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 112: Mathematical Physics</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Math 75: Fundamentals of Analysis III</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Math 121.1: Elem. Differential Equations I</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Bio 22: General Zoology</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Chem 32: Intro. to Bio-Organic Chemistry</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>(AH)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>(AH)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>P.E. 3</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>(SSP)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>P.E. 4</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                    </tbody>
+                </table>
+            {% elif year_filter == '3rd Year' %} <!-- 3rd year : BS Applied Physics -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Third Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Physics 121: Theoretical Mechanics</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Applied Phys 158: Computational Methods</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Physics 130: Electromagnetic Theory</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Applied Phys 163: Optics, Light and Lasers</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Applied Phys 110: Radiation Health Physics</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Applied Phys 181: Physical Electronics I</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Bio 25: Vertebrate Structure and Function</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>(AH)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>(MST)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>(SSP)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table>
+
+                <br><br>
+
+                <div style="margin-left: 20%;">
+                    <table style="margin-top: 15px; width: 40vw;"> 
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center; font-size: 20px;">Midyear</th>
+                            <th></th><th></th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right" style="border-right: none;">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">PI 100: The Life and Works of Jose Rizal</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td style="text-align: center;">(MST)</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table> 
+            {% elif year_filter == '4th Year' %} <!-- 4th year : BS Applied Physics -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Fourth Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Physics 151: Statistical and Thermal Physics</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Applied Phys 190: Practicum</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Applied Phys 171: Bioethics in Health Physics</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Applied Phys 191: Special Topics in Applied Physics</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Applied Phys 187: Physics of Medical Imaging</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Applied Phys 198: Special Problem</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Applied Phys 195: Biomedical Instrumentation & Measurement</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Elective</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Applied Phys 197: Undergraduate Seminar</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Elective</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Applied Phys 199: Research Methods in Applied Physics</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table>
+            {% endif %}
+        {% elif program_filter == 'BSBC' %} <!-- BS Biochemistry -->
+            {% if year_filter == 'None' %} <label style="margin-left:18%;">Select Year</label>
+            {% elif year_filter == '1st Year' %} <!-- 1st year : BS Biochemistry -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">First Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chem 19 (Principles of Chemistry)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Chem 33 (Organic Chemistry I)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Math 83 (Essentials of Analysis I)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Math 84 (Essentials of Analysis II)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Math 83</td> <!-- Prerequisites -->
+                        </tr>   
+                        <tr>
+                            <td>Math 101 (Elementary Statistics)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 71</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right">Math 83 or equivalent</td> <!-- Prerequisites -->
+                        </tr>   
+                        <tr>
+                            <td>GE 1</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 71.1</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right">Physics 71 (corequisite)</td> <!-- Prerequisites -->
+                        </tr>   
+                        <tr>
+                            <td>GE 2</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>GE 3</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>   
+                        <tr>
+                            <td>PE 1</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>GE 4</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>   
+                        <tr>
+                            <td>NSTP 1</td> <!-- Subject -->
+                            <td>(3)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>PE 2</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>   
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>NSTP 2</td> <!-- Subject -->
+                            <td>(3)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>   
+                           
+                    </tbody>
+                </table>
+
+                <br><br>
+
+                <div style="margin-left: 20%;">
+                    <table style="margin-top: 15px; width: 40vw;"> 
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center; font-size: 20px;">Midyear</th>
+                            <th></th><th></th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right" style="border-right: none;">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">Chem 111 (Inorganic Chemistry I)</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td style="text-align: center; font-style: italic; color: gray;">Chem 19</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td style="text-align: center;">GE 5</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table> 
+            {% elif year_filter == '2nd Year' %} <!-- 2nd year : BS Biochemistry -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Second Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chem 36 (Organic Chemistry II)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Chem 33</td> <!-- Prerequisites -->
+                            <td style="width: 400px;">Biochem 71 (Professional Ethics, Legal, and Social Issues in Chemistry and Biochemistry)</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Chem 43 (Biochemistry I)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Chem 19, Chem 33</td> <!-- Prerequisites -->
+                            <td>Chem 46 (Biochemistry II)</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right">Chem 43</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Math 85 (Essentials of Analysis III)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Math 84</td> <!-- Prerequisites -->
+                            <td>Chem 128 (Analytical Chemistry II)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Chem 29, Chem 33</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Chem 29 (Analytical Chemistry I)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Chem 19</td> <!-- Prerequisites -->
+                            <td>Physics 72 (Elementary Physics II)</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right">Physics 71</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>PE 3</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Physics 72.1 (Elementary Physics II Laboratory)</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right">Physics 71.1, Physics 72 (corequisite)</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Bio 110 (Integrated Principles of Biology)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>PE 4</td> <!-- Subject -->
+                            <td>(2)</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table>
+
+                <br><br>
+
+                <div style="margin-left: 20%;">
+                    <table style="margin-top: 15px; width: 40vw;"> 
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center; font-size: 20px;">Midyear</th>
+                            <th></th><th></th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right" style="border-right: none;">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">GE 6</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td style="text-align: center;">GE 7</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table> 
+            {% elif year_filter == '3rd Year' %} <!-- 3rd year : BS Biochemistry -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Third Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Bio 120 (Microbiology)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Bio 110</td> <!-- Prerequisites -->
+                            <td>Biochem 121 (Biochemistry of the Gene)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Chem 43</td> <!-- Prerequisites -->
+                        </tr>
+                        <tr>
+                            <td>Chem 161 (Physical Chemistry I)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Chem 19, Math 85, Physics 72, Physics 72.1</td> <!-- Prerequisites -->
+                            <td style="width: 400px;">Biochem 122 (Techniques in Biochemistry and Molecular Biology)</td> <!-- Subject -->
+                            <td>2</td> <!-- Units -->
+                            <td class="right">Chem 43, Bio120, Biochem 121 (co-requisite)</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Chem 129 (Analytical Chemistry III)</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right">Chem 128</td> <!-- Prerequisites -->
+                            <td>Biochem 198 (Seminar)</td> <!-- Subject -->
+                            <td>1</td> <!-- Units -->
+                            <td class="right">Junior Standing</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>GE 8</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Chem 162 (Physical Chemistry II)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Chem 161</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>Chem 163 (Physical Chemistry III)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Math 85, Physics 72, Physics 72.1</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td></td> <!-- Subject -->
+                            <td></td> <!-- Units -->
+                            <td class="right"></td> <!-- Prerequisites -->
+                            <td>CMSC 110 (Foundations of Biocomputing)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table>
+
+                <br><br>
+
+                <div style="margin-left: 20%;">
+                    <table style="margin-top: 15px; width: 40vw;"> 
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center; font-size: 20px;">Midyear</th>
+                            <th></th><th></th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right" style="border-right: none;">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">Biochem 190 (Practicum)</td> <!-- Subject -->
+                            <td style="text-align: center;">3</td> <!-- Units -->
+                            <td style="text-align: center; font-style: italic; color: gray;">Junior Standing</td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table> 
+            {% elif year_filter == '4th Year' %} <!-- 4th year : BS Biochemistry -->
+                <table style="margin-top: 25px;"> 
+                    <label style="margin-left:18%;">Fourth Year</label>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 20px;">First Semester</th>
+                            <th colspan="3" style="border-left: 1px solid lightgray; font-size: 20px;">Second Semester</th>
+                        </tr>
+                        <tr>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                            <th class="left-right">Subject</th>
+                            <th class="left-right">Units</th>
+                            <th class="left-right">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Biochem 125 (Physical Biochemistry)</td> <!-- Subject -->
+                            <td>5</td> <!-- Units -->
+                            <td class="right">Chem 46, Chem 162</td> <!-- Prerequisites -->
+                            <td>Biochem 168 (Environmental Biochemistry)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Chem 46</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Biochem 180 (Biochemical Engineering)</td> <!-- Subject -->
+                            <td>4</td> <!-- Units -->
+                            <td class="right">Biochem 121,s Biochem 122</td> <!-- Prerequisites -->
+                            <td>Biochem 200 (Thesis)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Biochem 199</td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Biochem 181 (Introduction to Bioinformatics and Cheminformatics)</td> <!-- Subject -->
+                            <td>2</td> <!-- Units -->
+                            <td class="right">Biochem 121, CMSC 110</td> <!-- Prerequisites -->
+                            <td>Elective 1</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Biochem 199 (Research Methods in Biochemistry)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Biochem 198</td> <!-- Prerequisites -->
+                            <td>Elective 2</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                        <tr>
+                            <td>Chem 112 (Inorganic Chemistry II)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td class="right">Chem 111, Chem 163</td> <!-- Prerequisites -->
+                            <td>PI 100 (The Life and Works of Jose Rizal)</td> <!-- Subject -->
+                            <td>3</td> <!-- Units -->
+                            <td></td> <!-- Prerequisites -->
+                        </tr> 
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
+        
+    </div>
+    
+    <div class="footer">
+        2023
+    </div>
+</body>
+<script>
+    var uploadCSV = document.querySelector('#program')
+    console.log(uploadCSV)
+    uploadCSV.addEventListener("change", function onChange(e) {
+        var queryByProgram = document.getElementById('filter').submit()
+    });
+
+    var uploadCSV = document.querySelector('#year')
+    console.log(uploadCSV)
+    uploadCSV.addEventListener("change", function onChange(e) {
+        var queryByProgram = document.getElementById('filter').submit()
+    });
+</script>
+</html>

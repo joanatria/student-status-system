@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>{{ student.student_number}} {{ student.first_name }} {{ student.last_name }}</title>    
+    <style>
+      img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .logout{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+            bottom: 250px;
+            position: absolute;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+            left: 0;
+            z-index: 1;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 85vw; 
+        }
+
+        table thead {
+            background-color: #f2f2f2; /* Change to your preferred header background color */
+            font-weight: bold;
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 12px; 
+            margin: -10; 
+        } 
+
+        table th {
+            background-color: #f2f2f2; /* Change to your preferred header background color */
+            font-weight: bold;
+            text-align: left; /* Adjust alignment if needed */
+        }
+
+        .grade-subject{
+            margin-top: 50px;
+            margin-left: 350px;
+            width: 150px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+        
+        .delete{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 300px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 300px;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+        .sortable {
+            margin-left: 250px;
+            border-collapse: collapse;
+            width: 85vw;
+        }
+
+        .sortable thead {
+            background-color: white !important; /* Use !important to ensure override */
+            font-weight: bold;
+        }
+
+        .sortable tr {
+            border-top: 1px solid lightgrey;
+            border-bottom: 1px solid lightgrey;
+        }
+
+        .sortable td,
+        .sortable th {
+            padding: 12px;
+            margin: -10px;
+            background-color: white !important;
+        }
+
+        .sortable th {
+            background-color: white !important; /* Use !important to ensure override */
+            font-weight: bold !important;
+            text-align: left;
+            color: maroon !important;
+        }
+
+        .data {
+            color: gray;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navbar"> 
+        <a href="/dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>
+    {% if user_role == 'ADMIN' %}
+    <div class="sidenav">
+        <label>Users</label>
+        <a href="/admin_dashboard"><u>Manage User Roles</u></a>
+        <br />
+        <label>Academics</label>
+        <a href="{% url 'academic_terms' %}">Academic Term</a>
+        <a href="{% url 'courses_offered' %}">Courses Offered</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'THESIS ADVISOR' %} 
+    <div class="sidenav">
+        <label>Professor</label>
+        <a href="/thesis_advisor_dashboard">Profile</a>
+        <br />
+        <label>Grades</label>
+        <a href="/courses">By Course</a>
+        <label for="SPLink" onclick="window.location.href='/advisor_view'" style="cursor: pointer;"><u>Special Project</u></label>
+        <label for="Reports" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'PROGRAM ADVISOR' %} 
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/program_advisor_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <label class="sidenav-label" onclick="window.location.href='/advisor_view'" style="cursor: pointer;"><u>Advisory Program</u></label>
+        <label class="sidenav-label" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% elif user_role == 'STAFF' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'registration' %}">Registration</a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/courses">Grades</a>
+        <a href="/advisor_assignments">Adviser Assignments</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'FACULTY' %} 
+
+    {% endif %}
+    <br>
+    <br>
+
+    <div style="width: 98vw;">
+        <div style="align-items: center;">
+            <label style="margin-left: 19.5%; margin-right: 8%;"> {{ student.first_name }} {{ student.last_name }} - {{ student.student_number}} </label>
+            <button class="grade-subject" onclick="window.location.href='/advisor_view'" type="button" style="margin-left: 35.5%;">Back</button>
+        </div>
+    
+        <br>
+        <br>
+        <div style="max-height: 65vh; overflow-y: auto; width: 100vw; overflow-x: hidden;">
+            {% for x in terms %}
+            <table class="sortable">
+                <label style="margin-left: 275px;">{{ x.title }}</label>
+                <br><br>
+                <thead>
+                    <tr>
+                        <th>Class Code</th>
+                        <th>Course</th>
+                        <th>Instructor</th>
+                        <th>Units</th>
+                        <th>Grade</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                {% for y in registrations %}
+                    {% if y.subject.term.id == x.id  %}
+                        <tr>
+                            <td style="font-weight: bold;"><em>{{ y.subject.class_code }}</em></td>
+                            <td class="data">{{ y.subject.subject_offered.subject_name }} - {{ y.subject.subject_offered.subject_title }}</em></td>
+                            <td class="data"><em>{{ y.subject.professor.first_name }} {{ y.subject.professor.last_name }}</em></td>
+                            <td class="data"><em>{{ y.subject.subject_offered.units }}</em></td>
+                            <td class="data" {% if y.grade > 3 %} style="color: red;" {% endif %}><em>{{ y.grade }}</em></td>
+                            <td class="data" {% if y.completion == 'FAILED' %} style="color: red;" {% elif y.completion == 'PASSED' %} style="color: green;" {% endif %}><em>{{ y.completion }}</em></td>
+                        <tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <br><br>
+            {% endfor %}
+
+            <table class="sortable" style="width: 90vw;">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">Total Units Completed</th>
+                        <th style="text-align: center;">Total Grade</th>
+                        <th colspan="2" style="text-align: center;">General Weighted Average</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="data" colspan="2" style="text-align: center;">{{ student.completed_units }}</em></td>
+                        <td class="data" style="text-align: center;"><em>{{ student.total_grade }}</em></td>
+                        <td class="data" colspan="2" style="text-align: center;"><em>{{ student.gwa }}</em></td>
+                    <tr>
+                </tbody>
+            </table>
+        </div>
+            
+    </div>  
+
+    <div class="footer">
+        2023
+    </div>
+
+    <!-- sortable css and javascript -->
+    <link href="https://cdn.jsdelivr.net/gh/tofsjonas/sortable@latest/sortable.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/gh/tofsjonas/sortable@latest/sortable.min.js"></script>
+</body>
+</html>

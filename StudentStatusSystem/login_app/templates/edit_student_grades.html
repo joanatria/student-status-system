@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>Thesis Advisor Dashboard</title>    
+    <style>
+      img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+        
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .logout{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+            bottom: 250px;
+            position: absolute;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+            left: 0;
+            z-index: 1;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 85vw; 
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 12px; 
+            margin: -10; 
+        } 
+
+        .grade-subject{
+            margin-top: 50px;
+            margin-left: 350px;
+            width: 300px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+        
+        .delete{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 300px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 300px;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        .grades-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 100px;
+            text-align: center;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+        .data{
+            color: gray;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navbar"> 
+        <a href="/thesis_advisor_dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 60%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>    
+    <div class="sidenav">
+        <label>Professor</label>
+        <a href="/thesis_advisor_dashboard"><u>Edit Profile</u></a>
+        <br />
+        <label>Grades</label>
+        <a href="/grades_student">By Student</a>
+        <a href="/grades_course">By Course</a>
+        <label>Special Project</label>
+        <label>Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    <br/>
+    <br/>
+    <br/>
+
+    <div>
+        <div style="align-items: center; ">
+            <label style="margin-left: 380px; color: black; margin-top: 200px;">Student Name</label>
+        </div>
+        <div style="align-items: center;">
+            <em style="margin-left: 380px;">Student ID</em>
+        </div>
+        <div style="align-items: center; margin-top: -100px; margin-left: 380px; ">
+            <button class="grade-subject" type="button">Back</button>
+            <input type="text" class="search-input" placeholder="Search by name...">
+        </div>
+    
+        <br>
+        <br>
+        <table>
+            {% for x in userprofiles %}
+                <tr class="userRow">
+                    <td style="font-weight: 600;">
+                        SUBJECT CODE
+                    </td>
+                    <td class="data"><em>SUBJECT NAME</em></td>
+                    <td class="data"><em>SEMESTER AND SY</em></td>
+                    <td><input type="text" class="grades-input" placeholder="0.00"></td>
+                </tr>
+            {% endfor %}
+        </table>        
+    </div>  
+
+    <div class="footer">
+        2023
+    </div>
+    <script>
+         function toggleEdit(button) {
+        var inputs = document.querySelectorAll('.inputs input, .inputs select, input');
+        inputs.forEach(function(input) {
+            input.readOnly = !input.readOnly;
+        });
+
+        var sexField = document.getElementById('sex');
+        sexField.disabled = !sexField.disabled;
+
+        if (button.textContent === "Edit") {
+            button.textContent = "Save";
+        } else {
+            button.textContent = "Edit";
+        }
+
+        // Change button color to green
+        button.style.backgroundColor = "rgb(0, 85, 0)";
+    }
+    </script>
+</body>
+</html>

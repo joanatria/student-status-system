@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>{{ subject.subject_offered.subject_name }} - {{ subject.subject_offered.subject_title }}</title>    
+    <style>
+      img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .grade-subject:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+        .logout{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+            bottom: 250px;
+            position: absolute;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+            left: 0;
+            z-index: 1;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 85vw; 
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 12px; 
+            margin: -10; 
+        } 
+
+        .grade-subject{
+            margin-top: 50px;
+            margin-left: 350px;
+            width: 150px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+        
+        .delete{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 300px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 300px;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+        .data{
+            color: gray;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navbar"> 
+        <a href="/dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>
+    {% if user_role == 'ADMIN' %}
+    <div class="sidenav">
+        <label>Users</label>
+        <a href="/admin_dashboard"><u>Manage User Roles</u></a>
+        <br />
+        <label>Academics</label>
+        <a href="{% url 'academic_terms' %}">Academic Term</a>
+        <a href="{% url 'courses_offered' %}">Courses Offered</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'THESIS ADVISOR' %} 
+    <div class="sidenav">
+        <label>Professor</label>
+        <a href="/thesis_advisor_dashboard">Profile</a>
+        <br />
+        <label>Grades</label>
+        <a href="/courses"><u>By Course</u></a>
+        <label for="SPLink" onclick="window.location.href='/advisor_view'" style="cursor: pointer;">Special Project</label>
+        <label for="Reports" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'PROGRAM ADVISOR' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/program_advisor_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses"><u>By Course</u></a>
+        <label class="sidenav-label" onclick="window.location.href='/advisor_view'" style="cursor: pointer;">Advisory Program</label>
+        <label class="sidenav-label" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% elif user_role == 'STAFF' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'registration' %}">Registration</a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/courses"><u>Grades</u></a>
+        <a href="/advisor_assignments">Adviser Assignments</a>
+        <a href="/graduation">Graduation</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'FACULTY' %} 
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/faculty_dashboard"><u>Profile</u></a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% endif %}
+    <br>
+    <br>
+
+    <div>
+        <form id='upload_csv' action="{% url 'upload_csv' %}" enctype="multipart/form-data" method="POST"> 
+            {% csrf_token %}
+        <div style="align-items: center;">
+            <label style="margin-left: 18%;">{{ subject.subject_offered.subject_name }} - {{ subject.subject_offered.subject_title }} </label>
+            <label class="grade-subject" style="margin-left: 15%; font-size: 16px; font-weight: normal;">Upload CSV<input type="file" name='csv_file 'id="file_input" required="True" hidden></label> 
+            <button class="grade-subject" onClick="downloadCSV()" type="submit" style="margin-left: 2%;">Download CSV</button>
+            <button class="grade-subject" {% if user_role == 'ADMIN'%} onclick="window.location.href='/academic_terms/{{ subject.term.id }}'" {% else %} onclick="window.location.href='/courses'" {% endif %} type="button" style="margin-left: 2%;">Back</button>
+                
+            <input name='subject' value="{{ subject.id }}" hidden>            
+        </div>
+        </form>
+        <form id='download_csv' action="{% url 'download_csv' %}" method="POST" hidden> 
+            {% csrf_token %}
+            <input name='subject' value="{{ subject.id }}" hidden>
+        </form>
+        <br/>
+        <br/>
+        <div style="max-height: 65vh; overflow-y: auto;">
+            <table >
+                <thead >
+                    <tr style="height: 60px;">
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Student Name</em></th>
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Student Number</em></th>
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Undergraduate Program</em></th>
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Grade</em></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for x in registrations %}
+                <form id="{{ x.student.id }} form" method="POST" action="{% url 'update_grade' x.id %}">
+                {% csrf_token %}
+                <tr>
+                <td style="font-weight: 600; margin-left: 100px;">{{ x.student.first_name }} {{ x.student.last_name }}</td>
+                <td><em>{{ x.student.student_number }}</em></td>
+                <td><em>{{ x.student.program }}</em></td>
+                <td class="data">
+                    <select name="grade" id="{{ x.student.id }}" class="grade-dropdown">
+                        {% for choice in grade_choices %}
+                        {% if choice == x.grade %}
+                        <option value="{{ choice }}" selected>{{ choice }}</option>
+                        {% else %}
+                        <option value="{{ choice }}">{{ choice }}</option>
+                        {% endif %}
+                        {% endfor%}
+                    </select> 
+                </td>
+                </tr>
+                </form>
+                {% endfor %}
+                </tbody>
+            </table>        
+        </div>
+        
+    </div>  
+
+    <div class="footer">
+        2023
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+    function downloadCSV() {
+        var download_button = document.getElementById('download_csv').submit()
+    }
+
+    var uploadCSV = document.querySelector('#file_input')
+    console.log(uploadCSV)
+    uploadCSV.addEventListener("change", function onChange(e) {
+        var upload_button = document.getElementById('upload_csv').submit()
+    });
+
+    var selectElements = document.querySelectorAll('.grade-dropdown')
+    console.log(selectElements)
+    selectElements.forEach(element => {
+        element.addEventListener("change", function onChange(e) {
+            // Get the new value
+            newValue = element.value;
+            // Get the select's ID
+            selectId = element.id;
+            console.log("New Value:", newValue);
+            console.log("Select ID:", selectId);
+
+            form = document.getElementById(selectId + " form").submit()
+        });
+    });
+
+    </script>
+</body>
+</html>

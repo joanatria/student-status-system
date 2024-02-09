@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>Edit User</title>
+</head>
+<style>
+        img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+        
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        .sidenav-label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .table-label{
+            font-size: 16px;
+            color: gray;
+        }
+
+        input, select{
+            border-radius: 25px;
+            border: 1px solid lightgray;
+            padding: 10px;
+            padding-left: 15px;
+            width: 100%;
+        }
+
+        button, .save-input{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+        }
+
+        .register-profile{
+            margin-left: 20%;
+            width: 100vw;
+            padding-top: 1%;
+        }
+
+        form{
+            margin-top: 3%;
+        }
+
+        .labels{
+            width: 170px;
+        }
+
+        .inputs{
+            width: 310px;
+        }
+
+        tr{
+            height: 60px;
+        }
+
+        .help-text {
+            display: none;
+        }
+
+        .help-icon {
+            cursor: pointer;
+            color: gray;
+        }
+
+        .save-btn {
+            background-color: rgb(0, 85, 0);
+            color: white;
+            width: 180px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background-color: #004225;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+</style>
+<body> 
+    <div class="navbar">
+        <a href="/admin_dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>    
+    <div class="sidenav">
+        <label class="sidenav-label">Users</label>
+        <a href="/admin_dashboard"><u>Manage User Roles</u></a>
+        <br />
+        <label class="sidenav-label">Academics</label>
+        <a href="{% url 'academic_terms' %}">Academic Term</a>
+        <a href="{% url 'courses_offered' %}">Courses Offered</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    <br>
+    <br>
+
+    <div class="register-profile">
+        <form method="POST" action="{% url 'update_profile' user_profile.id %}">
+            {% csrf_token %}
+            <div style="width: 90vw; padding-left: 15px; height: 80vh;">
+                <i class="w3-jumbo material-icons" style="margin-left: 50px; float: left; margin-top: 3%; margin-right: 10%; color: gray; border: 2px solid gray; border-radius: 100%; transform: scale(2.5);">person</i>
+                <table style="padding-top: 30px; width: 60vw;">
+                    <tr>
+                        <td style="width: 5vw;"><label class="table-label" for="username">Username:</label></td>
+                        <td style="width: 45%;">{{ form.username }}</td>                        
+                        <td style="width: 150px; padding-left: 6.5%;"><input type="submit" value="Save" class="save-btn"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 5vw;"><label class="table-label" for="staff_id">Staff ID:</label></td>
+                        <td style="width: 45%;">{{ profile_form.staff_id }}</td>
+                        <td style="width: 150px; padding-left: 6.5%;"><button type="button"><a href="/admin_dashboard" style="text-decoration:none">Back</a></button></td>
+                    </tr>
+                </table>
+                <table style="width: 70vw; padding-top: 2%; margin-left: 30px;">
+                    <tr>
+                        <td class="labels"><label class="table-label" for="first_name">First Name:</label></td>
+                        <td class="inputs">{{ profile_form.first_name }}</td>
+                        <td class="labels" style="padding-left:30px ;"><label class="table-label" for="department">Department:</label></td>
+                        <td class="inputs">{{ profile_form.department }}</td>
+                    </tr>
+                    <tr>
+                        <td class="labels" ><label class="table-label" for="middle_name">Middle Name:</label></td>
+                        <td class="inputs">{{ profile_form.middle_name }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="program">Contact Number:</label></td>
+                        <td class="inputs">{{ profile_form.contact_number }}</td>
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="last_name">Last Name:</label></td>
+                        <td class="inputs">{{ profile_form.last_name }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="role">User Role:</label></td>
+                        <td class="inputs">{{ profile_form.role }}</td>                        
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="email">Email Address:</label></td>
+                        <td class="inputs">{{ form.email }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="birthday">Birthday:</label></td>
+                        <td class="inputs">{{ profile_form.birthday }}</td>
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="sex">Sex:</label></td>
+                        <td class="inputs">{{ profile_form.sex }}</td>
+                        <td></td>
+                        <td style="padding-left: -100px;"><button type="button" style="width: 480px; margin-left: -140px;"><a href="{% url 'update_password' user_profile.id %}" style="text-decoration:none">Change Password</a></button></td>
+                    </tr>
+                </table>
+            
+            </div>
+        </form>
+    </div>
+
+    
+    
+    <div class="footer">
+        2023
+    </div>
+</body>
+
+</html>

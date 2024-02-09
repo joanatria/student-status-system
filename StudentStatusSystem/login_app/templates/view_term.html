@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>{{ term.title }}</title>    
+    <style>
+      img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .logout{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+            bottom: 250px;
+            position: absolute;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+            left: 0;
+            z-index: 1;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 85vw; 
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 12px; 
+            margin: -10; 
+        } 
+
+        .grade-subject{
+            margin-top: 50px;
+            margin-left: 350px;
+            width: 250px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+        
+        .delete{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 300px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 300px;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+        .data{
+            color: gray;
+        }
+
+        table tr:hover {
+            background-color: lightgray;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+        span:hover{
+            border: 1px solid maroon;
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navbar"> 
+        <a href="/dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>
+    {% if user_role == 'ADMIN' %}
+    <div class="sidenav">
+        <label>Users</label>
+        <a href="/admin_dashboard">Manage User Roles</a>
+        <br />
+        <label>Academics</label>
+        <a href="{% url 'academic_terms' %}"><u>Academic Term</u></a>
+        <a href="{% url 'courses_offered' %}">Courses Offered</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'THESIS ADVISOR' %} 
+    <div class="sidenav">
+        <label>Professor</label>
+        <a href="/thesis_advisor_dashboard">Profile</a>
+        <br />
+        <label>Grades</label>
+        <a href="/courses">By Course</a>
+        <label for="SPLink" onclick="window.location.href='/advisor_view'" style="cursor: pointer;">Special Project</label>
+        <label for="Reports" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'PROGRAM ADVISOR' %} 
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/program_advisor_dashboard"><u>Profile</u></a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <label class="sidenav-label" onclick="window.location.href='/advisor_view'" style="cursor: pointer;">Advisory Program</label>
+        <label class="sidenav-label" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% elif user_role == 'STAFF' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'registration' %}">Registration</a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/courses">Grades</a>
+        <a href="/advisor_assignments">Adviser Assignments</a>
+        <a href="/graduation">Graduation</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'FACULTY' %} 
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/faculty_dashboard"><u>Profile</u></a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% endif %}
+    <br>
+    <br>
+
+    <div>
+        <form method="POST" action="{% url 'view_term' term.id %}"> {% csrf_token %}
+        <div style="align-items: center;">
+            <br/>
+            <label style="margin-left: 20%;">{{ term.title }}</label>
+            <br/>
+            <button class="grade-subject"  type="button" onclick="window.location.href='/create_subject/{{ term.id }}'"
+            {% if term.current_term == 0 %} style="margin-left: 20%;" {% else %} style="margin-left: 20%;" {% endif %}
+            >Add Course</button>
+            {% if term.current_term == 0 %} 
+            <button class="grade-subject" type="button" style="margin-left: 2%;" onclick="setCurrent()">Set as Active Term</button>
+            {% endif %}
+            <input value='{{ professor_filter }}' type="text" class="search-input"  name='professor' style="margin-left: 2%; margin-top: 50px; width: 320px;" placeholder="Search by professor's last name...">
+            <input value='{{ search }}' type="text" class="search-input"  name='name' style="margin-left: 2%; margin-top: 50px; width: 320px;" placeholder="Search by name...">
+            <button type="submit" hidden>
+        </div>
+        </form>
+
+        <br>
+        
+        {% if no_subjects %}
+        <form id="delete_term" method="POST" action="{% url 'delete_term' term.id %}"> {% csrf_token %}
+            <label style="margin-left: 20%;">{{ no_subjects }}</label>
+            <button type="submit" onclick="return confirm('Delete Empty Term ?');" style="background-color: transparent; border: none; width: 50px;">
+                <span class="material-icons" style="color: maroon;">delete</span>
+            </button>
+        </form>
+        {% endif %}
+        
+        <div style="max-height: 60vh; overflow-y: auto;">
+            <table>
+                {% for x in subjects %}
+                <form id="delete_{{ x.id }}_form" method="POST" action="{% url 'delete_subject' x.id %}"> {% csrf_token %}
+                    <tr>
+                        <td onclick="window.location.href='/edit_course/{{ x.id }}'" style="font-weight: 600; margin-left: 100px;">{{ x.subject_offered.subject_name }}</td>
+                        <td onclick="window.location.href='/edit_course/{{ x.id }}'"><em>{{ x.subject_offered.subject_title }}</em></td>
+                        <td onclick="window.location.href='/edit_course/{{ x.id }}'"><em>{{ x.section }} - {{ x.subject_offered.units }} units</em></td>
+                        <td onclick="window.location.href='/edit_course/{{ x.id }}'"><em>{{ x.professor.first_name }} {{ x.professor.last_name }} </em></td>
+                        <td onclick="window.location.href='/edit_course/{{ x.id }}'"><em>{{ x.enrolled }} enrolled</em></td>
+                        <td class="data">
+                            <button type="submit" onclick="return confirm('Are you sure you wish to delete the course : \n      {{ x.subject_offered.subject_name }} ({{ x.subject_offered.subject_title }}) held by {{ x.professor.first_name }} {{ x.professor.last_name }}? \nNote: Cannot delete if any are enrolled');" style="background-color: transparent; border: none; width: 50px;">
+                                <span class="material-icons" style="color: maroon;">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                </form>
+                {% endfor %}
+            </table>        
+        </div>
+    </div>  
+
+    <form id='set_current' method="POST" action="{% url 'set_current_term' term.id %}"> {% csrf_token %}
+
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+        <script> alert('{{ message }}'); </script>
+        {% endfor %}
+    {% endif %}
+
+    
+
+
+    <div class="footer">
+        2023
+    </div>
+    <script>
+        function setCurrent() {
+            let result = confirm('Are you sure you wish to set this term as the active term for the system?') 
+            if (result == true) {
+                var queryByProgram = document.getElementById('set_current').submit()
+            }
+        }
+    </script>
+</body>
+</html>

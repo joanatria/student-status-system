@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>{% if user_role == 'THESIS ADVISOR'%} Thesis Advisor Dashboard
+        {% elif user_role == 'PROGRAM ADVISOR'%} Program Advisor Dashboard
+        {% elif user_role == 'STAFF'%} Staff Dashboard
+        {% elif user_role == 'FACULTY'%} Professor Dashboard
+        {% else %} Unauthorized access
+        {% endif %}
+    </title>
+</head>
+<style>
+        img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+        
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        .sidenav-label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .table-label{
+            font-size: 16px;
+            color: gray;
+        }
+
+        input, select{
+            border-radius: 25px;
+            border: 1px solid lightgray;
+            padding: 10px;
+            padding-left: 15px;
+            width: 100%;
+        }
+
+        button, .save-input{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+        }
+
+        .edit-profile{
+            margin-left: 20%;
+            width: 100vw;
+            padding-top: 3%;
+        }
+
+        form{
+            margin-top: 3%;
+        }
+
+        .labels{
+            width: 160px;
+        }
+
+        .inputs{
+            width: 275px;
+        }
+
+        tr{
+            height: 60px;
+        }
+</style>
+<body> 
+    <div class="navbar"> 
+        <a href="/dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 60%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>
+    {% if user_role == 'ADMIN' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Users</label>
+        <a href="/admin_dashboard"><u>Manage User Roles</u></a>
+        <br />
+        <label class="sidenav-label">Academics</label>
+        <a href="{% url 'academic_terms' %}">Academic Term</a>
+        <a href="{% url 'courses_offered' %}">Courses Offered</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'THESIS ADVISOR' %} 
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/program_advisor_dashboard"><u>Profile</u></a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <label class="sidenav-label" onclick="window.location.href='/advisor_view'" style="cursor: pointer;">Special Project</label>
+        <label class="sidenav-label" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'PROGRAM ADVISOR' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/program_advisor_dashboard"><u>Profile</u></a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <label class="sidenav-label" onclick="window.location.href='/advisor_view'" style="cursor: pointer;">Advisory Program</label>
+        <label class="sidenav-label" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% elif user_role == 'STAFF' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'registration' %}">Registration</a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/courses">Grades</a>
+        <a href="/advisor_assignments">Adviser Assignments</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'FACULTY' %} 
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/faculty_dashboard"><u>Profile</u></a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% endif %}
+    <br>
+    <br>
+
+    <div class="edit-profile">
+        <form id="edit_profile" method="POST"  action="{% url 'edit_profile' %}">
+            {% csrf_token %}
+            <div style="width: 90vw; padding-left: 15px; height: 80vh;">
+                <i class="w3-jumbo material-icons" style="margin-left: 50px; float: left; margin-top: 3%; margin-right: 100px; color: gray; border: 2px solid gray; border-radius: 100%; transform: scale(2.5);">person</i>
+                <table style="padding-top: 30px; width: 850px;">
+                    <tr>
+                        <td style="width: 8vw;"><label class="table-label" for="username">Username:</label></td>
+                        <td style="width: 60%;"><input type="text" id="username" name="username" value="{{ x.user }}" required readonly></td>
+                        <td style="width: 150px; padding-left: 6.5%;"><button type="button" onclick="toggleEdit(this)">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 8vw;"><label class="table-label" for="staff_id">Staff ID:</label></td>
+                        <td style="width: 60%;"><input type="text" id="staff_id" name="staff_id" value="{{ x.staff_id }}" required readonly></td>
+                    </tr>
+                </table>
+                <table style="width: 60vw; padding-top: 2%; margin-left: 30px;">
+                    <tr>
+                        <td class="labels"><label class="table-label" for="first_name">First Name:</label></td>
+                        <td class="inputs"><input type="text" id="first_name" name="first_name" value="{{ x.first_name }}" required readonly></td>
+                        <td class="labels" style="padding-left:30px ;"><label class="table-label" for="department">Department:</label></td>
+                        <td class="inputs"><input type="text" id="department" name="department" value="{{ x.department }}" required readonly></td>
+                    </tr>
+                    <tr>
+                        <td class="labels" ><label class="table-label" for="middle_name">Middle Name:</label></td>
+                        <td class="inputs"><input type="text" id="middle_name" name="middle_name" value="{{ x.middle_name }}" required readonly></td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="contact_number">Contact Number:</label></td>
+                        <td class="inputs"><input type="text" id="contact_number" name="contact_number" value="{{ x.contact_number }}"  readonly></td>
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="last_name">Last Name:</label></td>
+                        <td class="inputs"><input type="text" id="last_name" name="last_name" value="{{ x.last_name }}" required readonly></td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="role">User Role:</label></td>
+                        <td class="inputs">
+                            <select id="role" name="role" style="color: black;" disabled>
+                                {% for choice in x.Role.choices %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == x.role %} selected {% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>                        
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="email">Email Address:</label></td>
+                        <td class="inputs"><input type="text" id="email" name="email" value="{{ x.user.email }}" required readonly></td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="birthday">Birthday:</label></td>
+                        <td class="inputs"> <input type="date" id="birthday" name="birthday" value="{{ x.birthday|date:'Y-m-d' }}" required readonly></td>
+                    </tr>
+                    <tr>
+                        
+                    </tr>
+                </table>
+            </div>
+        </form> 
+    </div>
+
+    <div class="footer">
+        2023
+    </div>
+</body>
+<script>
+    function toggleEdit(button) {
+        var inputs = document.querySelectorAll('.inputs input, .inputs select, input');
+        inputs.forEach(function(input) {
+            input.readOnly = !input.readOnly;
+        });
+
+        //staff should not be able to change their own role
+        //var roleField = document.getElementById('role');
+        //roleField.disabled = !roleField.disabled;
+
+        if (button.textContent === "Edit") {
+            button.textContent = "Save";
+            button.style.backgroundColor = "rgb(0, 85, 0)";
+        } else {
+            button.textContent = "Edit";
+            button.style.backgroundColor = "rgb(128, 0, 0)";
+            document.getElementById('edit_profile').submit();
+        }
+        // Change button color to green  
+    }
+</script>
+</html>

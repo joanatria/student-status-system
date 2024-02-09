@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>
+        {% if user_role == 'THESIS ADVISOR'%} Special Project Students
+        {% elif user_role == 'PROGRAM ADVISOR'%} Program Students
+        {% else %} Unauthorized access
+        {% endif %}
+    </title>    
+    <style>
+      img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        .sidenav-label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .logout{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+            bottom: 250px;
+            position: absolute;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+            left: 0;
+            z-index: 1;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 85vw; 
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 12px; 
+            margin: -10; 
+        } 
+
+        .grade-subject{
+            margin-top: 50px;
+            margin-left: 350px;
+            width: 300px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+        
+        .delete{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 300px;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 300px;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+        .data{
+            color: gray;
+        }
+
+        .userRow:hover {
+            background-color: lightgray;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="navbar"> 
+        <a href="/dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>
+    {% if user_role == 'ADMIN' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Users</label>
+        <a href="/admin_dashboard"><u>Manage User Roles</u></a>
+        <br />
+        <label class="sidenav-label">Academics</label>
+        <a href="{% url 'academic_terms' %}">Academic Term</a>
+        <a href="{% url 'courses_offered' %}">Courses Offered</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'THESIS ADVISOR' %} 
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/thesis_advisor_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <label class="sidenav-label" onclick="window.location.href='/advisor_view'" style="cursor: pointer;"><u>Special Project</u></label>
+        <label class="sidenav-label" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'PROGRAM ADVISOR' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Professor</label>
+        <a href="/program_advisor_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Grades</label>
+        <a href="/courses">By Course</a>
+        <label class="sidenav-label" onclick="window.location.href='/advisor_view'" style="cursor: pointer;"><u>Advisory Program</u></label>
+        <label class="sidenav-label" onclick="window.location.href='/reports'" style="cursor: pointer;">Reports</label>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>
+    </div>
+    {% elif user_role == 'STAFF' %}
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard"><u>Profile</u></a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'create_student' %}">Registration</a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/courses">Grades</a>
+        <a href="/adviser_assignments">Adviser Assignments</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    {% elif user_role == 'FACULTY' %} 
+
+    {% endif %}
+    <br>
+    <br>    
+
+    <div>
+        <form method="POST" action="{% url 'advisor_view' %}">{% csrf_token %}
+        <div style="align-items: center; width: 80vw; margin-left: 20%;">
+            <label style="margin-right: 10%;">
+                {% if user_role == 'THESIS ADVISOR'%} Special Project Students
+                {% elif user_role == 'PROGRAM ADVISOR'%} Program Students
+                {% else %} Unauthorized access
+                {% endif %}
+            </label>
+            <input style="margin-left: 15%; width: 300px;"  value='{{ search }}' type="text" class="search-input" name='last_name' placeholder="Search by last name...">
+            <button style="margin-left: 1%; width: 150px;" class="grade-subject" type="submit">Search</button>
+        </div>
+        </form>
+    
+        <br>
+        <br>
+        <div style="max-height: 65vh; overflow-y: auto;">
+            <table>
+                <thead >
+                    <tr style="height: 60px;">
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em></em></th>
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Student Name</em></th>
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Student Number</em></th>
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Undergraduate Program</em></th>
+                        <th style="font-size: large; text-align: left; padding-left: 15px;"><em>Email Address</em></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for x in students %}
+                    <tr class="userRow" onclick="window.location.href='/view_student/{{ x.id }}'">
+                        <td><i class="w3-xxlarge material-icons" style="color: gray; border: 1px solid gray; border-radius: 100%;">person</i></td>
+                        <td style="font-weight: 600;">
+                        <a href="/view_student/{{ x.id }}">{{ x.first_name }} {{ x.last_name }}</a> 
+                        </td>
+                        <td class="data"><em>{{ x.student_number }}</em></td>
+                        <td class="data"><em>{{ x.program }}</em></td>
+                        <td class="data"><em>{{ x.email }}</em></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>        
+        </div>
+        
+    </div>  
+
+    <div class="footer">
+        2023
+    </div>
+</body>
+</html>

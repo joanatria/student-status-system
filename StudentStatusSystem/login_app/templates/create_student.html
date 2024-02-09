@@ -1,0 +1,339 @@
+p<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>Register Students</title>
+    <style>
+        img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .logout{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+            bottom: 250px;
+            position: absolute;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+            left: 0;
+            z-index: 1;
+        }
+
+        .table-label{
+            font-size: 16px;
+            font-weight: 100;
+            color: gray;
+        }
+
+        input, select{
+            border-radius: 25px;
+            border: 1px solid lightgray;
+            padding: 10px;
+            padding-left: 15px;
+            width: 100%;
+        }
+
+        table {
+            margin-left: 150px;
+            border-collapse: collapse; 
+            width: 95vw; 
+        }
+
+        .userRow {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 12px;
+            width: 100px;
+        } 
+
+        .register-new{
+            margin-top: 50px;
+            margin-left: 20%;
+            width: 15vw;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .register-old{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 15vw;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+        
+        .delete{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 15vw;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 20vw;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+        .data{
+            color: gray;
+        }
+
+        .register_student{
+            margin-left: 20%;
+            width: 100vw;
+            padding-top: 5%;
+        }
+
+        form{
+            margin-top: 3%;
+        }
+
+        .labels{
+            width: 160px;
+        }
+
+        .inputs{
+            width: 280px;
+        }
+
+        tr{
+            height: 60px;
+        }
+
+        button {
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+        }
+
+        .save-btn {
+            background-color: rgb(0, 85, 0);
+            color: white;
+            width: 250px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background-color: #004225;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="navbar"> 
+        <a href="/dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>    
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'registration' %}"><u>Registration</u></a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/staff_grades">Grades</a>
+        <a href="/advisor_assignments">Adviser Assignments</a>
+        <a href="/graduation">Graduation</a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+    <div class="register_student" style="width: fit-content; margin-left: 20%;">
+        <form method="POST" action="{% url 'create_student' %}">
+            {% csrf_token %}
+            <div style="width: 90vw; padding-left: 35px; height: 80vh;">
+                <i class="w3-jumbo material-icons" style="margin-left: 80px; float: left; margin-top: 3%; margin-right: 100px; color: gray; border: 2px solid gray; border-radius: 100%; transform: scale(2.5);">person</i>
+                <table style="padding-top: 30px; width: 55vw; border-collapse: collapse;">
+                    <tr>
+                        <td style="width: 10vw;"><label class="table-label" for="student_number">Student Number:</label></td>
+                        <td style="width: 50%;">{{ student_form.student_number}}</td>                        
+                        <td style="width: 100px; padding-left: 6.5%;"><input class="save-btn" type="submit" value="Save" style="width: 180px;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 10vw;"><label class="table-label" for="advisor">Advisor:</label></td>
+                        <td style="width: 50%;">{{ student_form.advisor}}</td>                        
+                        <td style="width: 100px; padding-left: 6.5%;"><button type="button" onclick="window.location.href='/registration'">Back</a></button></td>
+                    </tr>
+                </table>
+                <table style="width: 68vw; margin-top: 40px; margin-left: 30px;">
+                    <tr>
+                        <td class="labels" ><label class="table-label" for="first_name">First Name:</label></td>
+                        <td class="inputs">{{ student_form.first_name }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="graduate">Graduate:</label></td>
+                        <td class="inputs"><input name='graduate' value='ONGOING' readonly></td>                      
+                    </tr>
+                    <tr>
+                        <td class="labels" ><label class="table-label" for="middle_name">Middle Name:</label></td>
+                        <td class="inputs">{{ student_form.middle_name }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="program">Degree Program:</label></td>
+                        <td class="inputs">{{ student_form.program }}</td>
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="last_name">Last Name:</label></td>
+                        <td class="inputs">{{ student_form.last_name }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="enrolment">Enrolment:</label></td>
+                        <td class="inputs"><input value='Registered' readonly><input name='enrollment' value='ENROLLED' hidden></td>                        
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="email">Email Address:</label></td>
+                        <td class="inputs">{{ student_form.email }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="contact_number">Contact Number:</label></td>
+                        <td class="inputs">{{ student_form.contact_number }}</td>
+                    </tr>
+                    <tr>
+                        <td class="labels"><label class="table-label" for="sex">Sex:</label></td>
+                        <td class="inputs">{{ student_form.sex }}</td>
+                        <td class="labels" style="padding-left:30px ;"> <label class="table-label"  for="birthday">Birthday:</label></td>
+                        <td class="inputs">{{ student_form.birthday }}</td>
+                    </tr>
+                </table>
+        </form>
+    </div>
+    {% if message %}
+        <script> alert('{{ message }}'); </script>
+    {% endif %}
+
+    <div class="footer">
+        2023
+    </div>
+
+    <script>
+    
+        document.addEventListener('DOMContentLoaded', function() {
+        // Get the delete user button and delete buttons
+        const deleteUserButton = document.getElementById('deleteUserButton');
+        const deleteButtons = document.querySelectorAll('.deleteButton');
+
+        // Hide all delete buttons initially
+        deleteButtons.forEach(function(button) {
+            button.style.display = 'none';
+        });
+
+        // Add event listener to deleteUserButton
+        deleteUserButton.addEventListener('click', function() {
+            // Loop through each delete button and show them
+            deleteButtons.forEach(function(button) {
+                button.style.display = 'block';
+            });
+        });
+    });
+
+    function showRegisterForm() {
+        var registerForm = document.querySelector('.register_student');
+        var buttonsDiv = document.getElementById('buttonsDiv');
+
+        if (registerForm.style.display === 'none' || registerForm.style.display === '') {
+            registerForm.style.display = 'block';
+            buttonsDiv.style.display = 'none'; // Hide the buttons div
+        } else {
+            registerForm.style.display = 'none';
+            buttonsDiv.style.display = 'block'; // Show the buttons div
+        }
+    }
+    </script>    
+</body>
+</html>

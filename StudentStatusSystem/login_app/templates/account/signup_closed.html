@@ -1,0 +1,26 @@
+{% block content %}
+<style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 30px;
+        background-image: url('https://www-old.upm.edu.ph/sites/default/files/CAS.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+      
+</style>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; min-width: 100vw;">
+    <div style="justify-content: center; align-items: center; display:flex; min-height: 100vh; font-family: Montserrat; font-size: 30px; ">
+        <div style="width: 400px; height: 300px; background-color: rgba(255, 255, 255, 0.7); border-radius: 20px; border-color: rgba(255, 255, 255, 0.3); justify-content: center; align-items: center;">
+            <h1 style="font-family: 'Montserrat', sans-serif; letter-spacing: -1.5px; font-weight: 900; text-align: center; display: block; color: maroon; font-size: larger; ">Email not related to an account</h1>
+            <h3 class="text-center my-3" style="text-align: center; display: block; font-size: xx-large;">Please request an account an app admin before attempting another login
+            </h3>
+            <form method="post">
+                <div style="align-items: center; justify-content: center; display: flex;">
+                    <a href="/accounts/login" style="font-size: large; background-color: maroon; color: white; border: none; border-radius: 20px; padding: 10px; text-align: center;">Go back to login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

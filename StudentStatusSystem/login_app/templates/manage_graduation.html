@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>Enrollment</title>
+</head>
+<style>
+        img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+        
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        .sidenav-label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        .table-label{
+            font-size: 16px;
+            color: gray;
+        }
+
+        input, select{
+            border-radius: 25px;
+            border: 1px solid lightgray;
+            padding: 10px;
+            padding-left: 15px;
+            width: 100%;
+        }
+
+        button, .save-input{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+        }
+
+        .subjects{
+            width: 100vw;
+            padding-top: 3%;
+        }
+
+        form{
+            margin-top: 3%;
+        }
+
+        .labels{
+            width: 160px;
+        }
+
+        .inputs{
+            width: 275px;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 85vw; 
+            text-indent: 10px;
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+        }
+
+        table td {
+            padding: 10px; 
+            margin: -10; 
+        } 
+
+        table th {
+            text-align: left;
+            padding: 5px; 
+            margin: -10; 
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 370px;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        .enroll-dropdown {
+            width: auto;
+            background-color: maroon;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+</style>
+<body> 
+    <div class="navbar">
+        <a href="/admin_dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>    
+    <div class="sidenav">
+        <label class="sidenav-label">Staff</label>
+        <a href="/staff_dashboard">Profile</a>
+        <br />
+        <label class="sidenav-label">Students</label>
+        <a a href="{% url 'registration' %}">Registration</a>
+        <a href="/enrollment">Enrollment</a>
+        <a a href="/courses">Grades</a>
+        <a href="/advisor_assignments">Adviser Assignments</a>
+        <a href="/graduation"><u>Graduation</u></a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+
+    <form id="filter" method="POST" action="{% url 'manage_graduation' term.id %}"> {% csrf_token %}
+        <div style="width: 85vw; margin-left: 20%;">
+            <select id="program" name='program' id='program' class="enroll-dropdown" >
+                {% if program_filter == 'None' %}
+                    <option selected>None</option>
+                {% else %}
+                    <option>None</option>
+                {% endif %}
+                {% for program in programs %}
+                    {% if program_filter == program %}
+                    <option value="{{ program }}" selected>{{ program }}</option>
+                    {% else %}
+                    <option value="{{ program }}">{{ program }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <input style="margin-top: 50px; margin-left:1.5%; width: 300px;" value="{{ student_number_filter }}" type="text" name="student_number" id="student_number" class="search-input" placeholder="Search by student number...">
+            <button style="width: 45px; margin-left: -50px; border-radius: 46%; background-color: transparent; color: gray;" class="register" type="submit">></button>
+            <input style="margin-top: 50px; margin-left:1.5%; width: 300px;" value="{{ last_name_filter }}" type="text" name="last_name" id="last_name" class="search-input" placeholder="Search by last name...">
+            <button style="width: 45px; margin-left: -50px; border-radius: 46%; background-color: transparent; color: gray;" class="register" type="submit">></button>
+            <button style="margin-left:1.5%;" type="button" onclick=gradAll() >Graduate Qualified</a></button>
+            <button style="width: 100px; margin-left:1.5%;" type="button" onclick="window.location.href='/graduation'">Back</a></button>
+            <!-- <input type="submit" hidden></input> -->
+        </div>
+    </form>
+
+    <form id="copy-filter" method="POST" action="{% url 'graduate_all' term.id %}" hidden> {% csrf_token %}
+        <input type="text" name="student_number" id="copy_student_number">
+        <input type="text" name="last_name" id="copy_last_name">
+        <input type="text" name="program" id="copy_program">
+    </form>
+
+    <div class="subjects" style="max-height: 65vh; overflow-y: auto;">
+        <table>
+
+            <thead >
+                <tr>
+                    <th><em>Student Name</em></th>
+                    <th><em>Student Number</em></th>
+                    <th><em>Undergraduate Program</em></th>
+                    <th><em>Required Units</em></th>
+                    <th><em>Completed Units</em></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for x in students %}
+            <form id="{{ x.id }} form" method="POST" action="{% url 'update_graduation_status' %}">
+            {% csrf_token %}
+            <input name="student_id" value="{{ x.id }}" hidden></input>
+            <tr>
+            <td style="font-weight: 600; margin-left: 100px;">{{ x.first_name }} {{ x.last_name }}</td>
+            <td><em>{{ x.student_number }}</em></td>
+            <td><em>{{ x.program }}</em></td>
+            <td><em>{{ x.required_units }}</em></td>
+            <td><em>{{ x.completed_units }}</em></td>
+                <td style="padding-right: 100px;"><em><input class="graduate-checkbox" id="{{ x.id }}" type="checkbox"
+                    {% if x.graduate == 'GRADUATED' %} 
+                        checked
+                    {% endif %}
+                ></em></td>
+            <input name='graduate' id="{{ x.id }} value" hidden></input> 
+            <!-- catches checkbox's new checked value -->
+            </tr>
+            </form>
+            {% endfor %}
+            </tbody>
+        </table>      
+    </div>
+    
+
+    <div class="footer">
+        2023
+    </div>
+</body>
+<script>
+    var uploadCSV = document.querySelector('#program')
+    console.log(uploadCSV)
+    uploadCSV.addEventListener("change", function onChange(e) {
+        var queryByProgram = document.getElementById('filter').submit()
+    });
+
+    var selectElements = document.querySelectorAll('.graduate-checkbox')
+    console.log(selectElements)
+    selectElements.forEach(element => {
+        element.addEventListener("change", function onChange(e) {
+            // Get the new value
+            element.value = element.checked
+            newValue = element.value;
+            // Get the select's ID
+            selectId = element.id;
+            console.log("New Value:", newValue);
+            console.log("Select ID:", selectId);
+
+            document.getElementById(selectId + " value").value = newValue
+            form = document.getElementById(selectId + " form").submit()
+        });
+    });
+    
+    function gradAll() {
+        var last_name_filter = document.getElementById('last_name')
+        var last_name_copy = document.getElementById('copy_last_name')
+        last_name_copy.value = last_name_filter.value
+
+        var program_filter = document.getElementById('program')
+        var program_copy = document.getElementById('copy_program')
+        program_copy.value = program_filter.value
+
+        var student_number_filter = document.getElementById('student_number')
+        var student_number_copy = document.getElementById('copy_student_number')
+        student_number_copy.value = student_number_filter.value
+
+        var queryByProgram = document.getElementById('copy-filter').submit()
+    }
+
+</script>
+</html>

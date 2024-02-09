@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>Courses Offered</title>
+</head>
+
+<script>
+
+</script>
+
+
+<style>
+        img{
+            width: 65px;
+            height: auto;
+            margin-left: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .navbar {
+            background-color: maroon;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+        }
+
+        i{
+            color: white;
+            float: right;
+            margin-right: 25px;
+        }
+
+        .sidenav {
+            height: 100vh;
+            width: 250px; 
+            position: fixed; 
+            left: 0;
+            background-color: white; 
+            padding-top: 10%;
+            border: 1px solid maroon;
+            padding-left: 25px;
+        }
+
+        .sidenav a {
+            padding: 10px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            color: maroon; 
+            display: block;
+        }
+
+        .sidenav a:hover {
+            text-decoration: underline;
+        }
+
+        .sidenav-label{
+            font-size: 20px;
+            font-weight: 600;
+            color: maroon;
+        }
+
+        table {
+            margin-left: 250px;
+            border-collapse: collapse; 
+            width: 85vw; 
+        }
+
+        table tr {
+            border-top: 1px solid lightgrey; 
+            border-bottom: 1px solid lightgrey; 
+            cursor: pointer;
+        }
+
+        .table-label{
+            font-size: 16px;
+            color: gray;
+        }
+
+        input, select{
+            border-radius: 25px;
+            border: 1px solid lightgray;
+            padding: 10px;
+            padding-left: 15px;
+            width: 100%;
+        }
+
+        button, .save-input{
+            color: white;
+            background-color: maroon;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            width: 180px;
+        }
+
+        .footer {
+            background-color: maroon; 
+            color: white; 
+            padding: 20px; 
+            text-align: right; 
+            position: fixed; 
+            width: 100%; 
+            bottom: 0; 
+        }
+
+        .addCourses{
+            width: 60vw;
+            margin: 0 auto; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            display: none;
+        }
+
+        form{
+            margin-top: 3%;
+        }
+
+        .labels{
+            width: 160px;
+        }
+
+        .inputs{
+            width: 275px;
+        }
+
+        tr{
+            height: 60px;
+        }
+
+        .add{
+            margin-top: 50px;
+            margin-left: 55%;
+            width: 15vw;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+        
+        .delete{
+            margin-top: 50px;
+            margin-left: 25px;
+            width: 20vw;
+            background-color: maroon;
+            border: none;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .search-input{
+            padding: 10px;
+            margin-left: 25px;
+            width: 25vw;
+            border-radius: 20px;
+            border: 1px solid gray;
+        }
+
+        tbody tr:hover {
+            background-color: lightgray;
+        }
+
+        table th {
+            text-align: left;
+            padding: 5px; 
+            margin: -10; 
+        }
+
+        .data{
+            color: gray;
+        }
+
+        button:hover{
+            background-color: #510400;
+            cursor: pointer;
+        }
+
+        span:hover{
+            border: 1px solid maroon;
+            border-radius: 50%;
+        }
+</style>
+<body> 
+    <div class="navbar">
+        <a href="/admin_dashboard"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3d/University_of_the_Philippines_Manila_Seal.svg/300px-University_of_the_Philippines_Manila_Seal.svg.png" /></a>
+        <div style="color: white; margin-left: 2%; ">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-size: 35px; margin-top: 12px;">University of the Philippines Manila</h1>
+        </div>        
+        <div style="color: white; float: right; margin-top: 1%; margin-left: 52%;">
+            <i class="w3-xxlarge material-icons">person</i>
+            <p style="font-size: small;">{{request.user.username}}</p>
+        </div>
+    </div>    
+    <br>
+    <br>    
+    <div class="sidenav">
+        <label class="sidenav-label">Users</label>
+        <a href="/admin_dashboard">Manage User Roles</a>
+        <br />
+        <label class="sidenav-label">Academics</label>
+        <a href="{% url 'academic_terms' %}">Academic Term</a>
+        <a href="{% url 'courses_offered' %}"><u>Courses Offered</u></a>
+        <form action="{% url 'perform_logout' %}" method="post">
+            {% csrf_token %}
+            <button class="logout" type="submit" style="position: absolute; bottom: 250px;">Log Out</button>
+        </form>        
+    </div>
+
+    <form action="{% url 'courses_offered' %}" method="POST" id="filter" > {% csrf_token %}
+    <div class="buttonDiv">
+        <button class="add" type="button" onclick="window.location.href='/create_offering'">Add Offering</button>
+        <input type="text" class="search-input" name="search" value="{{ search }}" placeholder="Search by course name...">
+        <button style="width: 45px; margin-left: -50px; border-radius: 46%; background-color: transparent; color: gray;" type="submit">></button>
+    </div>
+    </form>
+
+    <div style="margin-top: 2%; max-height: 65vh; overflow-y: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th style="padding-left: 100px; font-size: large;"><em>Course Name</em></th>
+                    <th style="font-size: large;"><em>Course Title</em></th>
+                    <th style="font-size: large;"><em>Lecture</em></th>
+                    <th style="font-size: large;"><em>Laboratory</em></th>
+                    <th style="font-size: large;"><em>Units</em></th>
+                    <th style="font-size: large; padding-left: 40px;"><em>Department</em></th>
+                    <th style="font-size: large;"><em></em></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for x in offerings %}
+            <form id="delete {{ x.id }} form" method="POST" action="{% url 'delete_offering' x.id %}"> {% csrf_token %}
+                <tr class="userRow">
+                    <td onclick="window.location.href='/edit_offering/{{ x.id }}'" style="font-weight: 600; font-size: 18px; padding-left: 100px; width: 300px;">{{ x.subject_name }}</td>
+                    <td onclick="window.location.href='/edit_offering/{{ x.id }}'" class="data"><em>{{ x.subject_title }}</em></td>
+                    <td onclick="window.location.href='/edit_offering/{{ x.id }}'" class="data"><input type="checkbox" {% if x.lecture == 1 %} checked {% endif %} disabled></td>
+                    <td onclick="window.location.href='/edit_offering/{{ x.id }}'" class="data"><input type="checkbox" {% if x.lab == 1 %} checked {% endif %} disabled></td>
+                    <td onclick="window.location.href='/edit_offering/{{ x.id }}'" class="data"><em>{{ x.units }} units</em></td>
+                    <td onclick="window.location.href='/edit_offering/{{ x.id }}'" class="data" style="padding-left: 60px;"><em>{{ x.department }}</em></td>
+                    <td>
+                        <button type="submit" onclick="return confirm('Are you sure you wish to delete the course offering \n {{ x.subject_name }} - {{ x.subject_title }} ?');" class="deleteButton" value="Delete" id="deleteButton_{{ x.id }}" style="background-color: transparent; border: none;"><span class="material-icons" style="color: maroon;">delete</span></button>
+                    </td>
+                </tr>
+            </form>
+            {% endfor %}
+            </tbody>
+        </table>        
+    </div>  
+
+    {% if messages %}
+        {% for message in messages %}
+        <script> alert('{{ message }}'); </script>
+        {% endfor %}
+    {% endif %}
+
+    <div class="footer">
+        2023
+    </div>
+</body>
+</html>
